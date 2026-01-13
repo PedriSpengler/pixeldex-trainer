@@ -1,68 +1,75 @@
-# 🔴 Pokédex Fullstack
+<img width="1900" height="921" alt="image" src="https://github.com/user-attachments/assets/c4ea722a-5b84-4a47-a6a7-8d37e62645ea" /># 🔴 Pixeldex Trainer
 
-![Badge Status](https://img.shields.io/badge/STATUS-FINALIZADO-green)
-![Badge License](https://img.shields.io/badge/LICENSE-MIT-blue)
-![Badge Stack](https://img.shields.io/badge/STACK-MERN%2FPERN-orange)
+![Project Status](https://img.shields.io/badge/status-active-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-> Uma aplicação web interativa que simula uma Pokédex, permitindo aos usuários explorar o mundo Pokémon, filtrar por tipos, ver detalhes e, mediante autenticação, salvar seus favoritos.
+Uma aplicação **Fullstack** interativa que simula uma Pokédex com estética retrô (Gameboy/Nintendo). O projeto permite que usuários criem contas, naveguem por dados reais da PokéAPI e gerenciem sua própria lista de Pokémons favoritos, com persistência de dados em banco relacional.
 
 ---
 
 ## 📸 Screenshots
 
-| Login / Home | Detalhes / Favoritos |
-|:---:|:---:|
-| ![Home Screen](./assets/home-preview.png) | ![Details Screen](./assets/details-preview.png) |
+<div align="center">
+  <img width="1900" height="921" alt="image" src="https://github.com/user-attachments/assets/264e6c8f-5be7-4190-a1a9-898c307651d7" /> alt="Preview" />
 
----
-
-## 🚀 Sobre o Projeto
-
-Este projeto foi desenvolvido como um desafio Fullstack para criar uma experiência imersiva inspirada nos consoles clássicos da Nintendo/Gameboy. A aplicação consome a [PokéAPI](https://pokeapi.co/) para dados públicos e utiliza um backend próprio para gerenciar a autenticação de usuários e a persistência de dados (favoritos).
-
-### 🎯 Funcionalidades Principais
-
--   **🔐 Autenticação Completa:** Cadastro e Login de usuários via JWT (JSON Web Token).
--   **🔍 Explorar e Buscar:** Listagem paginada de Pokémons com barra de busca (por nome ou ID).
--   **🧠 Filtros Avançados:** Filtragem dinâmica por Tipo de Pokémon (Fogo, Água, Grama, etc.).
--   **📄 Detalhes Ricos:** Visualização de stats, habilidades, tipos e evoluções.
--   **⭐ Sistema de Favoritos:** Usuários logados podem favoritar Pokémons, salvando a lista no banco de dados.
--   **🎨 UI/UX Temática:** Design responsivo e nostálgico, adaptável para Desktop e Mobile.
+</div>
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-### Frontend
--   **React** (ou Next.js)
--   **TailwindCSS** (ou Styled Components)
--   **Axios** (Requisições HTTP)
--   **React Router** (Navegação SPA)
+O projeto foi construído utilizando uma arquitetura moderna e tipada de ponta a ponta.
 
-### Backend
--   **Node.js** & **Express**
--   **JWT** (Autenticação)
--   **PostgreSQL** com **Prisma** (Ou MongoDB com Mongoose - *ajuste conforme sua escolha*)
--   **Bcrypt** (Hash de senhas)
+### Frontend (Client)
+* **React + Vite**: Para uma interface rápida e reativa.
+* **TypeScript**: Garantia de tipagem estática e segurança no código.
+* **Tailwind CSS**: Estilização utilitária para o tema retrô responsivo.
+* **Axios**: Gerenciamento de requisições HTTP e interceptors para JWT.
+* **Lucide React**: Ícones vetoriais.
 
-### Infraestrutura & Dados
--   **PokéAPI** (Fonte de dados externa)
--   **Vercel** (Deploy Frontend)
--   **Render/Railway** (Deploy Backend)
+### Backend (Server)
+* **Node.js + Express**: Servidor RESTful robusto.
+* **Prisma ORM**: Camada de acesso ao banco de dados e migrations.
+* **PostgreSQL**: Banco de dados relacional (Hospedado no Neon.tech).
+* **JWT (JSON Web Tokens)**: Autenticação segura (Stateless).
+* **Zod**: Validação rigorosa de esquemas de entrada (payloads).
+* **BcryptJS**: Hash de senhas para segurança dos dados.
 
 ---
 
-## ⚙️ Como Rodar o Projeto Localmente
+## ✨ Funcionalidades
 
-Siga os passos abaixo para executar a aplicação no seu ambiente de desenvolvimento.
+### 🔐 Autenticação e Segurança
+- [x] **Cadastro de Usuário**: Validação de e-mail e criação de conta segura.
+- [x] **Login Seguro**: Autenticação via Token JWT.
+- [x] **Proteção de Rotas**: Middleware no Backend que bloqueia acesso não autorizado.
+- [x] **Persistência de Sessão**: Login mantido via LocalStorage e Axios Headers.
+
+### 🎮 Pokédex Interativa
+- [x] **Listagem**: Consumo da PokéAPI com paginação.
+- [x] **Busca Inteligente**: Filtragem por Nome ou ID do Pokémon.
+- [x] **Filtro por Tipo**: Seleção de tipos (Fogo, Água, Planta, etc.).
+- [x] **Detalhes**: Modal com Stats, Habilidades e Sprites.
+
+### ⭐ Sistema de Favoritos
+- [x] **Favoritar**: Usuários logados podem salvar Pokémons.
+- [x] **Persistência**: Dados salvos no PostgreSQL (não se perdem ao recarregar).
+- [x] **Gestão**: Visualização e remoção da lista de favoritos pessoais.
+
+---
+
+## 🚀 Como Rodar o Projeto
+
+Este é um projeto monorepo (Frontend e Backend no mesmo repositório). Siga os passos abaixo:
 
 ### Pré-requisitos
--   Node.js (v18+)
--   NPM ou Yarn
--   Banco de dados rodando (Postgres ou Mongo)
+* Node.js (v18+)
+* NPM ou Yarn
 
-### 1. Clone o repositório
+### 1. Configurando o Backend (Servidor)
+
+Navegue até a pasta do servidor e instale as dependências:
 
 ```bash
-git clone [https://github.com/SEU-USUARIO/pokedex-fullstack.git](https://github.com/SEU-USUARIO/pokedex-fullstack.git)
-cd pokedex-fullstack
+cd server
+npm install
