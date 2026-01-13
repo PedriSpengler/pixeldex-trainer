@@ -73,3 +73,48 @@ Navegue até a pasta do servidor e instale as dependências:
 ```bash
 cd server
 npm install
+```
+Crie um arquivo .env dentro da pasta server com as seguintes variáveis:
+```
+PORT=3001
+DATABASE_URL="sua_string_de_conexao_postgresql_aqui"
+JWT_SECRET="sua_chave_secreta_super_segura"
+```
+Rode as migrações do banco de dados (Prisma):
+```
+prisma migrate dev --name init
+```
+Inicie o servidor:
+```
+npm run dev
+```
+# O servidor rodará em http://localhost:3001
+2. Configurando o Frontend (Cliente)Em um novo terminal, volte para a raiz do projeto:
+```
+cd .. # Caso esteja na pasta server
+npm install
+```
+Inicie a aplicação React:
+```
+npm run dev
+```
+# O frontend rodará em http://localhost:8080 ou 5173
+Método,Rota,Descrição,Auth Requerida
+POST,/auth/register,Cria um novo usuário,❌
+POST,/auth/login,Retorna Token JWT,❌
+GET,/favorites,Lista favoritos do usuário,✅
+POST,/favorites,Adiciona um favorito,✅
+DELETE,/favorites/:id,Remove um favorito pelo ID,✅
+
+# 📂 Estrutura de Pastaspixeldex-trainer/
+├── src/                # Código Fonte do Frontend (React)
+│   ├── components/     # Componentes UI (Cards, Modais)
+│   ├── context/        # Context API (AuthContext)
+│   └── pages/          # Rotas da aplicação
+├── server/             # Código Fonte do Backend (Node/Express)
+│   ├── src/
+│   │   ├── middleware/ # Middlewares (Auth)
+│   │   ├── routes/     # Rotas da API
+│   │   └── server.ts   # Entry point
+│   └── prisma/         # Schema do Banco de Dados
+└── README.md
