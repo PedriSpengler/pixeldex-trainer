@@ -98,15 +98,111 @@ Inicie a aplicação React:
 ```
 npm run dev
 ```
-# O frontend rodará em http://localhost:8080 ou 5173
-```
-Método,Rota,Descrição,Auth Requerida
-POST,/auth/register,Cria um novo usuário,❌
-POST,/auth/login,Retorna Token JWT,❌
-GET,/favorites,Lista favoritos do usuário,✅
-POST,/favorites,Adiciona um favorito,✅
-DELETE,/favorites/:id,Remove um favorito pelo ID,✅
-```
+O frontend rodará em http://localhost:8080 ou 5173
+
+## 📚 Documentação da API
+
+A API segue os princípios REST e retorna dados em formato JSON.
+**Base URL:** `http://localhost:3001`
+
+### 🔐 Autenticação
+
+#### 1. Registrar Usuário
+Cria uma nova conta e retorna o token de acesso.
+
+* **URL:** `/auth/register`
+* **Método:** `POST`
+* **Body (JSON):**
+    ```json
+    {
+      "username": "AshKetchum",
+      "email": "ash@pallet.com",
+      "password": "pikachu_password"
+    }
+    ```
+* **Resposta (201 Created):**
+    ```json
+    {
+      "user": {
+        "id": "uuid-gerado",
+        "email": "ash@pallet.com",
+        "username": "AshKetchum"
+      },
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+    ```
+
+#### 2. Login
+Autentica um usuário existente.
+
+* **URL:** `/auth/login`
+* **Método:** `POST`
+* **Body (JSON):**
+    ```json
+    {
+      "email": "ash@pallet.com",
+      "password": "pikachu_password"
+    }
+    ```
+* **Resposta (200 OK):**
+    ```json
+    {
+      "user": { ... },
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+    ```
+
+---
+
+### ⭐ Favoritos
+⚠️ **Requer Header:** `Authorization: Bearer <seu_token_aqui>`
+
+#### 3. Listar Favoritos
+Retorna todos os Pokémons favoritados pelo usuário logado.
+
+* **URL:** `/favorites`
+* **Método:** `GET`
+* **Resposta (200 OK):**
+    ```json
+    [
+      {
+        "id": "fav-uuid-1",
+        "pokemonId": 25,
+        "name": "pikachu",
+        "types": ["electric"],
+        "sprite": "[https://raw.githubusercontent.com/PokeAPI/sprites/](https://raw.githubusercontent.com/PokeAPI/sprites/)...",
+        "createdAt": "2026-01-13T10:00:00.000Z"
+      }
+    ]
+    ```
+
+#### 4. Adicionar Favorito
+Salva um Pokémon na lista do usuário.
+
+* **URL:** `/favorites`
+* **Método:** `POST`
+* **Body (JSON):**
+    ```json
+    {
+      "pokemonId": 25,
+      "name": "pikachu",
+      "types": ["electric"],
+      "sprite": "[https://raw.githubusercontent.com/](https://raw.githubusercontent.com/)..."
+    }
+    ```
+
+#### 5. Remover Favorito
+Remove um Pokémon dos favoritos pelo ID do registro (não o ID do Pokémon).
+
+* **URL:** `/favorites/:id`
+* **Método:** `DELETE`
+* **Exemplo:** `/favorites/fav-uuid-1`
+* **Resposta (200 OK):**
+    ```json
+    {
+      "message": "Removed from favorites"
+    }
+    ```
 # 📂 Estrutura de Pastaspixeldex-trainer/
 ```
 ├── src/                # Código Fonte do Frontend (React)
