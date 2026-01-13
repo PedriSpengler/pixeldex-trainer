@@ -1,73 +1,68 @@
-# Welcome to your Lovable project
+# 🔴 Pokédex Fullstack
 
-## Project info
+![Badge Status](https://img.shields.io/badge/STATUS-FINALIZADO-green)
+![Badge License](https://img.shields.io/badge/LICENSE-MIT-blue)
+![Badge Stack](https://img.shields.io/badge/STACK-MERN%2FPERN-orange)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+> Uma aplicação web interativa que simula uma Pokédex, permitindo aos usuários explorar o mundo Pokémon, filtrar por tipos, ver detalhes e, mediante autenticação, salvar seus favoritos.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 📸 Screenshots
 
-**Use Lovable**
+| Login / Home | Detalhes / Favoritos |
+|:---:|:---:|
+| ![Home Screen](./assets/home-preview.png) | ![Details Screen](./assets/details-preview.png) |
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Sobre o Projeto
 
-**Use your preferred IDE**
+Este projeto foi desenvolvido como um desafio Fullstack para criar uma experiência imersiva inspirada nos consoles clássicos da Nintendo/Gameboy. A aplicação consome a [PokéAPI](https://pokeapi.co/) para dados públicos e utiliza um backend próprio para gerenciar a autenticação de usuários e a persistência de dados (favoritos).
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🎯 Funcionalidades Principais
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+-   **🔐 Autenticação Completa:** Cadastro e Login de usuários via JWT (JSON Web Token).
+-   **🔍 Explorar e Buscar:** Listagem paginada de Pokémons com barra de busca (por nome ou ID).
+-   **🧠 Filtros Avançados:** Filtragem dinâmica por Tipo de Pokémon (Fogo, Água, Grama, etc.).
+-   **📄 Detalhes Ricos:** Visualização de stats, habilidades, tipos e evoluções.
+-   **⭐ Sistema de Favoritos:** Usuários logados podem favoritar Pokémons, salvando a lista no banco de dados.
+-   **🎨 UI/UX Temática:** Design responsivo e nostálgico, adaptável para Desktop e Mobile.
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠️ Tecnologias Utilizadas
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend
+-   **React** (ou Next.js)
+-   **TailwindCSS** (ou Styled Components)
+-   **Axios** (Requisições HTTP)
+-   **React Router** (Navegação SPA)
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Backend
+-   **Node.js** & **Express**
+-   **JWT** (Autenticação)
+-   **PostgreSQL** com **Prisma** (Ou MongoDB com Mongoose - *ajuste conforme sua escolha*)
+-   **Bcrypt** (Hash de senhas)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### Infraestrutura & Dados
+-   **PokéAPI** (Fonte de dados externa)
+-   **Vercel** (Deploy Frontend)
+-   **Render/Railway** (Deploy Backend)
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## ⚙️ Como Rodar o Projeto Localmente
 
-**Use GitHub Codespaces**
+Siga os passos abaixo para executar a aplicação no seu ambiente de desenvolvimento.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Pré-requisitos
+-   Node.js (v18+)
+-   NPM ou Yarn
+-   Banco de dados rodando (Postgres ou Mongo)
 
-## What technologies are used for this project?
+### 1. Clone o repositório
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```bash
+git clone [https://github.com/SEU-USUARIO/pokedex-fullstack.git](https://github.com/SEU-USUARIO/pokedex-fullstack.git)
+cd pokedex-fullstack
