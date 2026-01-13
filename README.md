@@ -99,14 +99,16 @@ Inicie a aplicação React:
 npm run dev
 ```
 # O frontend rodará em http://localhost:8080 ou 5173
+```
 Método,Rota,Descrição,Auth Requerida
 POST,/auth/register,Cria um novo usuário,❌
 POST,/auth/login,Retorna Token JWT,❌
 GET,/favorites,Lista favoritos do usuário,✅
 POST,/favorites,Adiciona um favorito,✅
 DELETE,/favorites/:id,Remove um favorito pelo ID,✅
-
+```
 # 📂 Estrutura de Pastaspixeldex-trainer/
+```
 ├── src/                # Código Fonte do Frontend (React)
 │   ├── components/     # Componentes UI (Cards, Modais)
 │   ├── context/        # Context API (AuthContext)
@@ -118,3 +120,4 @@ DELETE,/favorites/:id,Remove um favorito pelo ID,✅
 │   │   └── server.ts   # Entry point
 │   └── prisma/         # Schema do Banco de Dados
 └── README.md
+```
