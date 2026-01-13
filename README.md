@@ -1,4 +1,4 @@
-<img width="1900" height="921" alt="image" src="https://github.com/user-attachments/assets/c4ea722a-5b84-4a47-a6a7-8d37e62645ea" /># 🔴 Pixeldex Trainer
+# 🔴 Pixeldex Trainer
 
 ![Project Status](https://img.shields.io/badge/status-active-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
