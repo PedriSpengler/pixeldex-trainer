@@ -10,7 +10,7 @@ Uma aplicação **Fullstack** interativa que simula uma Pokédex com estética r
 ## 📸 Screenshots
 
 <div align="center">
-  <img width="1900" height="921" alt="image" src="https://github.com/user-attachments/assets/264e6c8f-5be7-4190-a1a9-898c307651d7" /> alt="Preview" />
+  <img width="1900" height="921" alt="image" src="https://github.com/user-attachments/assets/264e6c8f-5be7-4190-a1a9-898c307651d7" alt="Preview" />
 
 </div>
 
