@@ -8,32 +8,29 @@ import { useFavorites } from '@/contexts/FavoritesContext';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Props for the PokemonDetailsModal component.
+ */
 interface PokemonDetailsModalProps {
-  pokemonId: number | null;
-  onClose: () => void;
+  pokemonId: number | null; // ID of the Pokémon to fetch; if null, the modal is closed.
+  onClose: () => void;      // Callback to trigger when the modal should close.
 }
 
+/**
+ * Mapping of Pokémon types to background colors.
+ */
 const typeColors: Record<string, string> = {
-  normal: 'bg-type-normal',
-  fire: 'bg-type-fire',
-  water: 'bg-type-water',
-  electric: 'bg-type-electric',
-  grass: 'bg-type-grass',
-  ice: 'bg-type-ice',
-  fighting: 'bg-type-fighting',
-  poison: 'bg-type-poison',
-  ground: 'bg-type-ground',
-  flying: 'bg-type-flying',
-  psychic: 'bg-type-psychic',
-  bug: 'bg-type-bug',
-  rock: 'bg-type-rock',
-  ghost: 'bg-type-ghost',
-  dragon: 'bg-type-dragon',
-  dark: 'bg-type-dark',
-  steel: 'bg-type-steel',
-  fairy: 'bg-type-fairy',
+  normal: 'bg-type-normal', fire: 'bg-type-fire', water: 'bg-type-water',
+  electric: 'bg-type-electric', grass: 'bg-type-grass', ice: 'bg-type-ice',
+  fighting: 'bg-type-fighting', poison: 'bg-type-poison', ground: 'bg-type-ground',
+  flying: 'bg-type-flying', psychic: 'bg-type-psychic', bug: 'bg-type-bug',
+  rock: 'bg-type-rock', ghost: 'bg-type-ghost', dragon: 'bg-type-dragon',
+  dark: 'bg-type-dark', steel: 'bg-type-steel', fairy: 'bg-type-fairy',
 };
 
+/**
+ * Mapping of base stats to specific Lucide icons for visual representation.
+ */
 const statIcons: Record<string, React.ReactNode> = {
   hp: <Heart className="h-4 w-4" />,
   attack: <Sword className="h-4 w-4" />,
@@ -43,23 +40,31 @@ const statIcons: Record<string, React.ReactNode> = {
   speed: <Wind className="h-4 w-4" />,
 };
 
+/**
+ * Short labels for Pokémon stats to fit the retro UI.
+ */
 const statLabels: Record<string, string> = {
-  hp: 'HP',
-  attack: 'ATK',
-  defense: 'DEF',
-  specialAttack: 'SP.ATK',
-  specialDefense: 'SP.DEF',
-  speed: 'SPD',
+  hp: 'HP', attack: 'ATK', defense: 'DEF',
+  specialAttack: 'SP.ATK', specialDefense: 'SP.DEF', speed: 'SPD',
 };
 
+/**
+ * PokemonDetailsModal Component
+ * An overlay that fetches and displays detailed information about a Pokémon,
+ * including its stats, abilities, shiny form, and evolution chain.
+ */
 export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalProps) {
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showShiny, setShowShiny] = useState(false);
+  const [showShiny, setShowShiny] = useState(false); // State to toggle between normal and shiny sprites
+  
   const { user } = useAuth();
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const navigate = useNavigate();
 
+  /**
+   * Effect: Fetches Pokémon details whenever the pokemonId prop changes.
+   */
   useEffect(() => {
     if (pokemonId) {
       setLoading(true);
@@ -69,13 +74,16 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
     }
   }, [pokemonId]);
 
+  /**
+   * Handles adding/removing a Pokémon from favorites.
+   * Redirects to authentication page if the user is not logged in.
+   */
   const handleFavoriteClick = () => {
     if (!user) {
       onClose();
       navigate('/auth');
       return;
     }
-
     if (!pokemon) return;
 
     if (isFavorite(pokemon.id)) {
@@ -93,17 +101,19 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
   return (
     <Dialog open={pokemonId !== null} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-4 border-primary pixel-border p-0">
+        {/* Hidden title for Accessibility (Screen Readers) */}
         <DialogTitle className="sr-only">
           {pokemon?.name ? `${pokemon.name} Details` : 'Pokemon Details'}
         </DialogTitle>
         
         {loading ? (
+          /* LOADING STATE: Displays a pulsing circle */
           <div className="flex items-center justify-center h-64">
             <div className="w-16 h-16 rounded-full bg-primary animate-pulse" />
           </div>
         ) : pokemon ? (
           <div className="relative">
-            {/* Header */}
+            {/* --- HEADER SECTION --- */}
             <div className="bg-primary p-4 relative">
               <button
                 onClick={onClose}
@@ -123,18 +133,15 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
               
               <div className="flex gap-2 mt-2">
                 {pokemon.types.map(type => (
-                  <span
-                    key={type}
-                    className={cn("type-badge text-white", typeColors[type])}
-                  >
+                  <span key={type} className={cn("type-badge text-white", typeColors[type])}>
                     {type}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Sprite */}
             <div className="p-6">
+              {/* --- SPRITE & TOGGLES SECTION --- */}
               <div className="flex justify-center items-center gap-4 mb-6">
                 <div className="gameboy-screen rounded-xl p-6 relative w-48 h-48 flex items-center justify-center">
                   <div className="absolute inset-0 scanlines opacity-20 rounded-xl" />
@@ -146,24 +153,22 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
                 </div>
                 
                 <div className="flex flex-col gap-2">
+                  {/* Favorite Toggle */}
                   <button
                     onClick={handleFavoriteClick}
                     className={cn(
                       "p-3 rounded-lg retro-button transition-colors",
-                      isFavorite(pokemon.id)
-                        ? "bg-secondary text-secondary-foreground"
-                        : "bg-muted text-muted-foreground hover:bg-secondary/50"
+                      isFavorite(pokemon.id) ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:bg-secondary/50"
                     )}
                   >
                     <Star className={cn("h-6 w-6", isFavorite(pokemon.id) && "fill-current")} />
                   </button>
+                  {/* Shiny Toggle */}
                   <button
                     onClick={() => setShowShiny(!showShiny)}
                     className={cn(
                       "p-3 rounded-lg retro-button transition-colors",
-                      showShiny
-                        ? "bg-secondary text-secondary-foreground"
-                        : "bg-muted text-muted-foreground hover:bg-secondary/50"
+                      showShiny ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:bg-secondary/50"
                     )}
                   >
                     <Sparkles className="h-6 w-6" />
@@ -171,7 +176,7 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
                 </div>
               </div>
 
-              {/* Info */}
+              {/* --- PHYSICAL INFO (Height/Weight) --- */}
               <div className="grid grid-cols-2 gap-4 mb-6 text-center">
                 <div className="bg-muted rounded-lg p-3 pixel-border">
                   <span className="font-pixel text-[10px] text-muted-foreground">Height</span>
@@ -183,7 +188,7 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
                 </div>
               </div>
 
-              {/* Stats */}
+              {/* --- BASE STATS SECTION --- */}
               <div className="mb-6">
                 <h3 className="font-pixel text-sm text-primary mb-4">BASE STATS</h3>
                 <div className="space-y-3">
@@ -191,13 +196,11 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
                     <div key={key} className="flex items-center gap-3">
                       <div className="flex items-center gap-2 w-24">
                         <span className="text-secondary">{statIcons[key]}</span>
-                        <span className="font-pixel text-[10px] text-muted-foreground">
-                          {statLabels[key]}
-                        </span>
+                        <span className="font-pixel text-[10px] text-muted-foreground">{statLabels[key]}</span>
                       </div>
                       <span className="font-pixel text-xs w-10 text-foreground">{value}</span>
                       <Progress 
-                        value={(value / 255) * 100} 
+                        value={(value / 255) * 100} // Stats are visualized as a percentage of the max possible (255)
                         className="flex-1 h-3 bg-muted"
                       />
                     </div>
@@ -205,22 +208,19 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
                 </div>
               </div>
 
-              {/* Abilities */}
+              {/* --- ABILITIES SECTION --- */}
               <div className="mb-6">
                 <h3 className="font-pixel text-sm text-primary mb-3">ABILITIES</h3>
                 <div className="flex flex-wrap gap-2">
                   {pokemon.abilities.map(ability => (
-                    <span
-                      key={ability}
-                      className="px-3 py-1 bg-muted rounded-lg font-pixel text-[10px] text-foreground capitalize pixel-border"
-                    >
+                    <span key={ability} className="px-3 py-1 bg-muted rounded-lg font-pixel text-[10px] text-foreground capitalize pixel-border">
                       {ability.replace('-', ' ')}
                     </span>
                   ))}
                 </div>
               </div>
 
-              {/* Evolution Chain */}
+              {/* --- EVOLUTION CHAIN SECTION --- */}
               {pokemon.evolutionChain.length > 1 && (
                 <div>
                   <h3 className="font-pixel text-sm text-primary mb-4">EVOLUTION</h3>
@@ -229,13 +229,9 @@ export function PokemonDetailsModal({ pokemonId, onClose }: PokemonDetailsModalP
                       <div key={evo.id} className="flex items-center gap-2">
                         <div className={cn(
                           "gameboy-screen rounded-lg p-2 w-20 h-20 flex items-center justify-center",
-                          evo.id === pokemon.id && "ring-2 ring-secondary"
+                          evo.id === pokemon.id && "ring-2 ring-secondary" // Highlight current Pokémon in the chain
                         )}>
-                          <img
-                            src={evo.sprite}
-                            alt={evo.name}
-                            className="w-full h-full object-contain"
-                          />
+                          <img src={evo.sprite} alt={evo.name} className="w-full h-full object-contain" />
                         </div>
                         {index < pokemon.evolutionChain.length - 1 && (
                           <span className="font-pixel text-muted-foreground">→</span>

@@ -5,11 +5,18 @@ import { useFavorites } from '@/contexts/FavoritesContext';
 import { PokemonBasic } from '@/lib/pokemon';
 import { cn } from '@/lib/utils';
 
+/**
+ * Props for the PokemonCard component.
+ */
 interface PokemonCardProps {
-  pokemon: PokemonBasic;
-  onClick: () => void;
+  pokemon: PokemonBasic; // Basic data for the Pokémon (id, name, types, sprite)
+  onClick: () => void;    // Function to trigger when the card is clicked
 }
 
+/**
+ * Mapping of Pokémon types to their corresponding CSS background classes.
+ * These classes should be defined in your Tailwind config or global CSS.
+ */
 const typeColors: Record<string, string> = {
   normal: 'bg-type-normal',
   fire: 'bg-type-fire',
@@ -31,20 +38,33 @@ const typeColors: Record<string, string> = {
   fairy: 'bg-type-fairy',
 };
 
+/**
+ * PokemonCard Component
+ * Displays a summary of a Pokémon in a retro-style card.
+ * Includes a "Favorite" toggle and hover animations.
+ */
 export function PokemonCard({ pokemon, onClick }: PokemonCardProps) {
   const { user } = useAuth();
   const { isFavorite, addFavorite, removeFavorite, isLoading } = useFavorites();
   const navigate = useNavigate();
+
+  // Check if this specific Pokémon is currently in the user's favorites
   const favorite = isFavorite(pokemon.id);
 
+  /**
+   * Handles clicks on the Star button.
+   * Prevents the click from triggering the card's main onClick (event bubbling).
+   */
   const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Stops the card's onClick from firing
     
+    // Redirect to login if an unauthenticated user tries to favorite
     if (!user) {
       navigate('/auth');
       return;
     }
 
+    // Toggle favorite status
     if (favorite) {
       removeFavorite(pokemon.id);
     } else {
@@ -62,6 +82,7 @@ export function PokemonCard({ pokemon, onClick }: PokemonCardProps) {
       className="pokemon-card rounded-lg pixel-border cursor-pointer group transition-all duration-300 hover:scale-105 hover:-translate-y-1"
       onClick={onClick}
     >
+      {/* --- FAVORITE BUTTON --- */}
       <div className="absolute top-2 right-2 z-10">
         <button
           onClick={handleFavoriteClick}
@@ -73,12 +94,15 @@ export function PokemonCard({ pokemon, onClick }: PokemonCardProps) {
               : "bg-muted/80 text-muted-foreground hover:bg-secondary/50 hover:text-secondary-foreground"
           )}
         >
+          {/* Fills the star icon if the item is a favorite */}
           <Star className={cn("h-4 w-4", favorite && "fill-current")} />
         </button>
       </div>
 
       <div className="p-4">
+        {/* --- VISUAL SECTION: "GAME BOY SCREEN" --- */}
         <div className="relative gameboy-screen rounded-lg p-4 mb-3 aspect-square flex items-center justify-center overflow-hidden">
+          {/* Adds a visual CRT/Scanline overlay for retro effect */}
           <div className="absolute inset-0 scanlines opacity-30" />
           <img
             src={pokemon.sprite}
@@ -88,7 +112,9 @@ export function PokemonCard({ pokemon, onClick }: PokemonCardProps) {
           />
         </div>
 
+        {/* --- INFO SECTION --- */}
         <div className="text-center">
+          {/* Formats ID to #001 style */}
           <span className="font-pixel text-[10px] text-muted-foreground">
             #{pokemon.id.toString().padStart(3, '0')}
           </span>
@@ -96,6 +122,7 @@ export function PokemonCard({ pokemon, onClick }: PokemonCardProps) {
             {pokemon.name}
           </h3>
           
+          {/* TYPE BADGES */}
           <div className="flex justify-center gap-1 mt-2 flex-wrap">
             {pokemon.types.map(type => (
               <span

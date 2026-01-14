@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+/**
+ * API Base URL
+ */
 const BASE_URL = 'https://pokeapi.co/api/v2';
 
+/**
+ * Interfaces for Type Safety
+ */
 export interface PokemonBasic {
   id: number;
   name: string;
@@ -35,12 +41,20 @@ export interface EvolutionStage {
   sprite: string;
 }
 
+/**
+ * Static list of all available Pokémon types for UI filtering.
+ */
 export const POKEMON_TYPES = [
   'normal', 'fire', 'water', 'electric', 'grass', 'ice',
   'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
   'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
 ];
 
+/**
+ * Fetches a paginated list of Pokémon.
+ * Note: The PokeAPI list endpoint only returns names and URLs, 
+ * so we perform secondary fetches to get IDs and sprites.
+ */
 export async function fetchPokemonList(offset: number = 0, limit: number = 20): Promise<{ pokemon: PokemonBasic[]; total: number }> {
   const response = await axios.get(`${BASE_URL}/pokemon?offset=${offset}&limit=${limit}`);
   const total = response.data.count;
@@ -59,6 +73,13 @@ export async function fetchPokemonList(offset: number = 0, limit: number = 20): 
   return { pokemon, total };
 }
 
+/**
+ * Fetches comprehensive details for a single Pokémon.
+ * This function hits three different endpoints: 
+ * 1. /pokemon/{id} (stats/types)
+ * 2. /pokemon-species/{id} (to find the evolution chain URL)
+ * 3. /evolution-chain/{id} (the actual evolution path)
+ */
 export async function fetchPokemonDetails(idOrName: string | number): Promise<PokemonDetails> {
   const response = await axios.get(`${BASE_URL}/pokemon/${idOrName}`);
   const speciesResponse = await axios.get(response.data.species.url);
@@ -69,7 +90,7 @@ export async function fetchPokemonDetails(idOrName: string | number): Promise<Po
     const evolutionResponse = await axios.get(speciesResponse.data.evolution_chain.url);
     evolutionChain = await parseEvolutionChain(evolutionResponse.data.chain);
   } catch (e) {
-    console.log('Could not fetch evolution chain');
+    console.error('Could not fetch evolution chain', e);
   }
 
   return {
@@ -93,6 +114,10 @@ export async function fetchPokemonDetails(idOrName: string | number): Promise<Po
   };
 }
 
+/**
+ * Recursively parses the nested evolution chain object from PokeAPI.
+ * The API uses a "linked list" style structure (node -> evolves_to -> node).
+ */
 async function parseEvolutionChain(chain: any): Promise<EvolutionStage[]> {
   const stages: EvolutionStage[] = [];
   
@@ -109,6 +134,7 @@ async function parseEvolutionChain(chain: any): Promise<EvolutionStage[]> {
       console.log(`Could not fetch ${name}`);
     }
     
+    // Recurse through all possible branches of evolution (e.g., Eevee)
     for (const evolution of node.evolves_to) {
       await traverse(evolution);
     }
@@ -118,9 +144,12 @@ async function parseEvolutionChain(chain: any): Promise<EvolutionStage[]> {
   return stages;
 }
 
+/**
+ * Searches for a Pokémon by specific name or ID.
+ */
 export async function searchPokemon(query: string): Promise<PokemonBasic | null> {
   try {
-    const response = await axios.get(`${BASE_URL}/pokemon/${query.toLowerCase()}`);
+    const response = await axios.get(`${BASE_URL}/pokemon/${query.toLowerCase().trim()}`);
     return {
       id: response.data.id,
       name: response.data.name,
@@ -128,13 +157,17 @@ export async function searchPokemon(query: string): Promise<PokemonBasic | null>
       sprite: response.data.sprites.other['official-artwork'].front_default || response.data.sprites.front_default,
     };
   } catch {
-    return null;
+    return null; // Return null if not found to handle UI error states
   }
 }
 
+/**
+ * Fetches up to 40 Pokémon belonging to a specific elemental type.
+ */
 export async function fetchPokemonByType(type: string): Promise<PokemonBasic[]> {
   const response = await axios.get(`${BASE_URL}/type/${type}`);
   
+  // Slice to avoid fetching too many details at once
   const pokemonPromises = response.data.pokemon.slice(0, 40).map(async (p: { pokemon: { name: string; url: string } }) => {
     try {
       const details = await axios.get(p.pokemon.url);
@@ -150,5 +183,5 @@ export async function fetchPokemonByType(type: string): Promise<PokemonBasic[]> 
   });
 
   const pokemon = await Promise.all(pokemonPromises);
-  return pokemon.filter(Boolean) as PokemonBasic[];
+  return pokemon.filter(Boolean) as PokemonBasic[]; // Filter out failed requests
 }

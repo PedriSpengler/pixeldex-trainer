@@ -7,6 +7,11 @@ import { z } from 'zod';
 const router = Router();
 const prisma = new PrismaClient();
 
+/**
+ * --- VALIDATION SCHEMAS ---
+ * We use Zod to ensure the data sent by the frontend matches our requirements
+ * before we even touch the database.
+ */
 const registerSchema = z.object({
   email: z.string().email().max(255),
   username: z.string().min(2).max(50),
@@ -18,21 +23,25 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
-// POST /auth/register
+/**
+ * POST /auth/register
+ * Creates a new trainer account in the database.
+ */
 router.post('/register', async (req, res) => {
   try {
+    // 1. Validate request body against schema
     const { email, username, password } = registerSchema.parse(req.body);
 
-    // Check if user exists
+    // 2. Check if the email is already taken
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    // Hash password
+    // 3. Hash the password (Never store plain-text passwords!)
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // 4. Create the user in the database
     const user = await prisma.user.create({
       data: {
         email,
@@ -41,18 +50,20 @@ router.post('/register', async (req, res) => {
       },
     });
 
-    // Generate token
+    // 5. Generate a JWT token valid for 7 days
     const token = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
 
+    // 6. Respond with user data (excluding password) and the token
     res.status(201).json({
       user: { id: user.id, email: user.email, username: user.username },
       token,
     });
   } catch (error) {
+    // Handle validation errors specifically
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: (error as any).errors[0].message });
     }
@@ -61,24 +72,28 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// POST /auth/login
+/**
+ * POST /auth/login
+ * Verifies credentials and issues a new JWT token.
+ */
 router.post('/login', async (req, res) => {
   try {
+    // 1. Validate input
     const { email, password } = loginSchema.parse(req.body);
 
-    // Find user
+    // 2. Find the user by email
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Check password
+    // 3. Compare the provided password with the hashed password in the DB
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Generate token
+    // 4. Issue a new JWT token
     const token = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET!,

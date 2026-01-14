@@ -6,9 +6,20 @@ import { SearchBar } from '@/components/SearchBar';
 import { Pagination } from '@/components/Pagination';
 import { PokemonDetailsModal } from '@/components/PokemonDetailsModal';
 
+/**
+ * Constant for pagination limit.
+ */
 const ITEMS_PER_PAGE = 20;
 
+/**
+ * Index Page Component
+ * The main landing page of the Pokédex. It handles:
+ * 1. Initial data fetching and pagination.
+ * 2. Real-time search by name or ID.
+ * 3. Filtering by Pokémon elemental types.
+ */
 const Index = () => {
+  // --- STATE MANAGEMENT ---
   const [pokemon, setPokemon] = useState<PokemonBasic[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,12 +29,19 @@ const Index = () => {
   const [selectedPokemonId, setSelectedPokemonId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Effect Hook: Triggers a fresh load of the Pokémon list whenever the page changes,
+   * provided that no active search or type filter is overriding the default view.
+   */
   useEffect(() => {
     if (!selectedType && !searchResult) {
       loadPokemon(currentPage);
     }
   }, [currentPage, selectedType, searchResult]);
 
+  /**
+   * Fetches the standard paginated list from the API.
+   */
   const loadPokemon = async (page: number) => {
     setLoading(true);
     setError(null);
@@ -33,16 +51,20 @@ const Index = () => {
       setPokemon(data);
       setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
     } catch (err) {
-      setError('Failed to load Pokémon');
+      setError('Failed to load Pokémon. Check your internet connection.');
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * Handles text-based search.
+   * Clears type filters and replaces the current list with a single result.
+   */
   const handleSearch = async (query: string) => {
     setLoading(true);
     setError(null);
-    setSelectedType(null);
+    setSelectedType(null); // Clear type filter on search
     
     try {
       const result = await searchPokemon(query);
@@ -55,15 +77,19 @@ const Index = () => {
         setPokemon([]);
       }
     } catch (err) {
-      setError('Search failed');
+      setError('Search failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * Handles type-based filtering.
+   * If a type is provided, it fetches specific Pokémon; otherwise, it resets to page 1.
+   */
   const handleTypeFilter = async (type: string | null) => {
     setSelectedType(type);
-    setSearchResult(null);
+    setSearchResult(null); // Clear search on type filter
     setCurrentPage(1);
     
     if (type) {
@@ -72,9 +98,9 @@ const Index = () => {
       try {
         const data = await fetchPokemonByType(type);
         setPokemon(data);
-        setTotalPages(1);
+        setTotalPages(1); // Filtering by type usually disables standard pagination
       } catch (err) {
-        setError('Failed to filter by type');
+        setError('Failed to filter by type.');
       } finally {
         setLoading(false);
       }
@@ -83,6 +109,9 @@ const Index = () => {
     }
   };
 
+  /**
+   * Resets all search/filter parameters to return to the initial view.
+   */
   const handleClear = () => {
     setSearchResult(null);
     setSelectedType(null);
@@ -90,6 +119,9 @@ const Index = () => {
     loadPokemon(1);
   };
 
+  /**
+   * Handles page changes and scrolls the user back to the top of the list.
+   */
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -100,7 +132,7 @@ const Index = () => {
       <Header />
       
       <main className="container py-6">
-        {/* Hero Section */}
+        {/* HERO SECTION */}
         <div className="text-center mb-8">
           <h1 className="font-pixel text-2xl md:text-4xl text-primary mb-2">
             POKÉDEX
@@ -110,7 +142,7 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Search & Filter */}
+        {/* SEARCH & FILTER CONTROLS */}
         <div className="mb-8">
           <SearchBar
             onSearch={handleSearch}
@@ -120,7 +152,7 @@ const Index = () => {
           />
         </div>
 
-        {/* Status Indicators */}
+        {/* ACTIVE FILTER STATUS INDICATORS */}
         {(searchResult || selectedType) && (
           <div className="mb-4 flex items-center gap-2">
             <span className="font-pixel text-[10px] text-muted-foreground">
@@ -136,7 +168,7 @@ const Index = () => {
           </div>
         )}
 
-        {/* Loading State */}
+        {/* LOADING STATE: Custom animated Pokéball spinner */}
         {loading && (
           <div className="flex justify-center items-center py-16">
             <div className="text-center">
@@ -153,7 +185,7 @@ const Index = () => {
           </div>
         )}
 
-        {/* Error State */}
+        {/* ERROR STATE */}
         {error && !loading && (
           <div className="text-center py-16">
             <p className="font-pixel text-sm text-destructive mb-4">{error}</p>
@@ -166,7 +198,7 @@ const Index = () => {
           </div>
         )}
 
-        {/* Pokemon Grid */}
+        {/* POKEMON GRID DISPLAY */}
         {!loading && !error && (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -179,7 +211,7 @@ const Index = () => {
               ))}
             </div>
 
-            {/* Pagination */}
+            {/* PAGINATION: Hidden during search/filter results */}
             {!searchResult && !selectedType && totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
@@ -191,7 +223,7 @@ const Index = () => {
         )}
       </main>
 
-      {/* Details Modal */}
+      {/* GLOBAL DETAILS MODAL */}
       <PokemonDetailsModal
         pokemonId={selectedPokemonId}
         onClose={() => setSelectedPokemonId(null)}
