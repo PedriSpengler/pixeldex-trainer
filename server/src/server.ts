@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3001;
  * credentials: True allows cookies and authorization headers to be sent.
  */
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:8080'], 
+  origin: ['http://localhost:5173', 'http://localhost:8080', 'https://pixeldex-trainer.vercel.app'],
   credentials: true
 }));
 
